@@ -7,16 +7,16 @@ import Background from './src/Components/Background';
 import { Routes } from './src/routes/';
 
 export default function App() {
-  const [fontsLoading] = useFonts({
+  const [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_500Medium,
     Inter_700Bold
  
   });
 
-  if (!fontsLoading) {
+  if (!fontsLoaded) {
 
-    <AppLoading />
+   return <AppLoading />;
   }
   return (
     <Background>
