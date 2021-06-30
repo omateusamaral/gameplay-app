@@ -32,7 +32,9 @@ export default function AppointmentCreate() {
     setGUild(guildSelected);
     setShowModal(false);
   }
-
+  function handleCategorySelect(categoryId: string) {
+    categoryId === category ? setCategory('') : setCategory(categoryId);
+  }
   return (
       <KeyboardAvoidingView style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
