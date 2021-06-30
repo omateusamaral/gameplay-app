@@ -7,13 +7,9 @@ import { styles } from './styles';
 import { theme } from "../../global/styles/theme";
 import Player from '../../assets/player.svg';
 import Calendar from '../../assets/calendar.svg';
+import { GuildProps } from "../Guild";
 
-export type GuildProps = {
-  id:string,
-  name:string,
-  icon:null|string,
-  owner:boolean
-}
+
 export type AppointmentProps = {
   id: string;
   guild: GuildProps;

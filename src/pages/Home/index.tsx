@@ -14,11 +14,11 @@ export default function Home() {
   const [category, setCategory] = useState('');
   const navigation = useNavigation();
 
-  function handleAppointmentDetails(){
+  function handleAppointmentDetails() {
     navigation.navigate("AppointmentDetails");
   }
 
-  function handleAppointmentCreate(){
+  function handleAppointmentCreate() {
     navigation.navigate("AppointmentCreate");
   }
   const appointments = [
@@ -47,46 +47,48 @@ export default function Home() {
       date: '22/06 às 20:40h',
       description: 'É hoje que vamos chegar ao challenger'
     }
+
   ]
   function handleCategorySelect(categoryId: string) {
     categoryId === category ? setCategory('') : setCategory(categoryId);
   }
   return (
     <Background>
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Profile />
-        <ButtonAdd  onPress={handleAppointmentCreate}/>
-      </View>
-      
-      <CategorySelect
-        categorySelected={category}
-        setCategory={handleCategorySelect}
-      />
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Profile />
+          <ButtonAdd onPress={handleAppointmentCreate} />
+        </View>
 
-      <View style={styles.content}>
+        <CategorySelect
+          categorySelected={category}
+          setCategory={handleCategorySelect}
+        />
+
         <ListHeader
           title="Partidas Agendadas"
           subtitle="Total 6"
         />
 
+
+
         <FlatList
           data={appointments}
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
-            <Appointment 
-            data={item} 
-            onPress={handleAppointmentDetails}
+            <Appointment
+              data={item}
+              onPress={handleAppointmentDetails}
             />
           )}
           style={styles.matches}
           showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={()=><ListDivider />}
-        />
-          
-      </View>
+          ItemSeparatorComponent={() => <ListDivider />}
+          contentContainerStyle={{ paddingBottom: 69 }}
 
-    </View>
+        />
+
+      </View>
     </Background>
   );
 }

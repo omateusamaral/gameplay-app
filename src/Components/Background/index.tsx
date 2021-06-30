@@ -6,11 +6,11 @@ type Props={
   children:ReactNode;
 }
 export default function Background({children}:Props){
-  const {secondary100,secondary80} = theme.colors;
+  const {secondary100,secondary90} = theme.colors;
   return(
     <LinearGradient 
       style={styles.container}
-      colors={[secondary80, secondary100]}
+      colors={[secondary90, secondary100]}
     >
       {children}
       </LinearGradient>

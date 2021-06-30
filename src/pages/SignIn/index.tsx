@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Text, View, Image } from 'react-native';
-import illustrationImg from '../../assets/illustration.png';
+import illustrationImg from '../../assets/illustration2.png';
 import { styles } from './styles';
 import ButtonIcon from '../../Components/ButtonIcon';
 import Background from '../../Components/Background';
@@ -18,7 +18,7 @@ export default function SignIn() {
         <Image
           source={illustrationImg}
           style={styles.image}
-          resizeMode="stretch"
+          resizeMode="contain"
         />
 
         <View style={styles.content}>

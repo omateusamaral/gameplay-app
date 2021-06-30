@@ -7,8 +7,6 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from 'react-native';
 import Background from '../../Components/Background';
 import Header from '../../Components/Header';
@@ -16,15 +14,13 @@ import GuildIcon from '../../Components/GuildIcon';
 import SmallInput from '../../Components/SmallInput';
 import TextArea from '../../Components/TextArea';
 import Button from '../../Components/Button';
-
-
 import ModalView from '../../Components/ModalView';
 import Guilds from '../Guilds';
-
 import CategorySelect from '../../Components/CategorySelect';
 import { theme } from '../../global/styles/theme';
 import { styles } from './styles';
-import { GuildProps } from '../../Components/Appointment';
+import { GuildProps } from '../../Components/Guild';
+
 
 export default function AppointmentCreate() {
   const [category, setCategory] = useState('');
@@ -38,10 +34,10 @@ export default function AppointmentCreate() {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <KeyboardAvoidingView style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
+        <Background>
         <ScrollView>
           <Header
             title="Agendar Partida"
@@ -84,7 +80,7 @@ export default function AppointmentCreate() {
 
             <View style={styles.field}>
               <View>
-                <Text style={styles.label}>
+              <Text style={[styles.label,{marginBottom:12}]}>
                   Dia e Mês
                 </Text>
                 <View style={styles.column}>
@@ -97,7 +93,7 @@ export default function AppointmentCreate() {
               </View>
 
               <View>
-                <Text style={styles.label}>
+                <Text style={[styles.label,{marginBottom:12}]}>
                   Hora e Minuto
                 </Text>
                 <View style={styles.column}>
@@ -128,10 +124,10 @@ export default function AppointmentCreate() {
             </View>
           </View>
         </ScrollView>
-        <ModalView visible={showModal}>
+        </Background>
+        <ModalView visible={showModal} closeModal={() => setShowModal(false)}>
           <Guilds handleGuildSelect={handleGuildSelect} />
         </ModalView>
       </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
   )
 }
