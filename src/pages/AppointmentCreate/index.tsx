@@ -33,7 +33,7 @@ export default function AppointmentCreate() {
     setShowModal(false);
   }
   function handleCategorySelect(categoryId: string) {
-    categoryId === category ? setCategory('') : setCategory(categoryId);
+    setCategory(categoryId);
   }
   return (
       <KeyboardAvoidingView style={styles.container}
@@ -50,7 +50,7 @@ export default function AppointmentCreate() {
             ]
           }>Categoria</Text>
           <CategorySelect hasCheckBox
-            setCategory={setCategory}
+            setCategory={handleCategorySelect}
             categorySelected={category} />
           <View style={styles.form}>
             <RectButton onPress={() => setShowModal(true)}>
