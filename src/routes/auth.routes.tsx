@@ -21,7 +21,6 @@ export default function AuthRoutes() {
       }}
       headerMode="none"
     >
-      <Screen name="SignIn" component={SignIn} />
       <Screen name="Home" component={Home} />
       <Screen name="AppointmentDetails" component={AppointmentDetails} />
       <Screen name="AppointmentCreate" component={AppointmentCreate} />
