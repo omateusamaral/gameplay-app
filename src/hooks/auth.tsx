@@ -1,6 +1,6 @@
 //contexto de login da aplicação
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import  * as AuthSession from 'expo-auth-session';
+import * as AuthSession from 'expo-auth-session';
 
 import {
   SCOPE,
@@ -8,7 +8,7 @@ import {
   CDN_IMAGE,
   REDIRECT_URI,
   RESPONSE_TYPE
-} from '../configs';
+} from '../configs/discordAuth';
 import { api } from '../services/api';
 
 type User = {
@@ -22,16 +22,17 @@ type User = {
 
 type AuthContextData = {
   user: User;
-  loading:boolean;
-  sigIn:() =>Promise<void>;
+  loading: boolean;
+  sigIn: () => Promise<void>;
 }
 type AuthProviderProps = {
   children: ReactNode;
 }
 
 type AuthorizationResponse = AuthSession.AuthSessionResult & {
-  params:{
-    acess_token:string;
+  params: {
+    access_token: string;
+    error?: string;
   }
 }
 export const AuthContext = createContext({} as AuthContextData);
@@ -40,34 +41,44 @@ export const AuthContext = createContext({} as AuthContextData);
 function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>({} as User);
   const [loading, setLoading] = useState(false);
-  async function sigIn(){
+
+  async function sigIn() {
     try {
       setLoading(true);
       const authUrl = `${api.defaults.baseURL}/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
-      
-      const {type, params} = await AuthSession
-      .startAsync({authUrl}) as AuthorizationResponse;
-      
-      if(type ==="success"){
-        api.defaults.headers.authorization = `Bearer ${params.acess_token}`;
+
+      const { type, params } = await AuthSession
+        .startAsync({ authUrl }) as AuthorizationResponse;
+
+        if (type === "success" && !params.error) {
+
+        api.defaults.headers.Authorization =  `Bearer ${params.access_token}`;
 
         const userInfo = await api.get('/users/@me');
-        const firstName = userInfo.data.username.splite(' ')[0];
+        
+        const firstName = await userInfo.data.username.split(' ')[0];
+        
         userInfo.data.avatar = `${CDN_IMAGE}/avatars/${userInfo.data.id}/${userInfo.data.avatar}.png`;
-       setUser({
-         ...userInfo.data,
-         firstName,
-         token:params.acess_token
-       });
-       setLoading(false); 
-      }else{
+
+        const userData = {
+          ...userInfo.data,
+          firstName,
+          token: params.access_token
+        }
+        console.log('aqui5');
+
+        setUser(userData);
+        setLoading(false);
+      } else {
         setLoading(false);
       }
-      
+
     } catch {
+      setLoading(false);
       throw new Error('Não foi possível autenticar');
     }
   }
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -80,7 +91,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 }
 
 //
-function useAuth(){
+function useAuth() {
   const context = useContext(AuthContext);
 
   return context;

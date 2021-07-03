@@ -1,9 +1,9 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
 import { useFonts } from 'expo-font';
-import { Inter_500Medium, Inter_400Regular,Inter_700Bold } from '@expo-google-fonts/inter';
+import { Inter_500Medium, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import AppLoading from 'expo-app-loading';
-import {AuthProvider} from './src/hooks/auth';
+import { AuthProvider } from './src/hooks/auth';
 import Background from './src/Components/Background';
 import { Routes } from './src/routes/';
 
@@ -12,12 +12,12 @@ export default function App() {
     Inter_400Regular,
     Inter_500Medium,
     Inter_700Bold
- 
+
   });
 
   if (!fontsLoaded) {
 
-   return <AppLoading />;
+    return <AppLoading />;
   }
   return (
     <Background>
@@ -27,7 +27,7 @@ export default function App() {
         translucent
       />
       <AuthProvider>
-      <Routes />
+        <Routes />
       </AuthProvider>
     </Background>
   );
