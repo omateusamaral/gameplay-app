@@ -1,8 +1,7 @@
-import React from "react";
+import React,{useState} from "react";
 
 import { View,FlatList} from "react-native";
-import { GuildProps } from "../../Components/Appointment";
-import Guild from "../../Components/Guild";
+import Guild,{GuildProps} from "../../Components/Guild";
 import ListDivider from "../../Components/ListDivider";
 
 import {styles} from './styles';
@@ -12,14 +11,8 @@ type Props = {
   handleGuildSelect: (guild:GuildProps)=> void;
 }
 export default function Guilds({handleGuildSelect}:Props){
-  const guilds = [
-    {
-      id:'1',
-      name:'Lendários',
-      icon:'image.png',
-      owner:true
-    }
-  ]
+  const [guilds,setGuilds] = useState<GuildProps[]>([]);
+ 
   return(
     <View style={styles.container}>
       <FlatList 

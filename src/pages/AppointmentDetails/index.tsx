@@ -62,7 +62,7 @@ export default function AppointmentDetails() {
         renderItem={({ item }) => (
           <Member data={item} />
         )}
-        ItemSeparatorComponent={() => <ListDivider />}
+        ItemSeparatorComponent={() => <ListDivider isCentered/>}
         contentContainerStyle={{ paddingBottom: 69 }}
         style={styles.members}
         showsVerticalScrollIndicator={false}
