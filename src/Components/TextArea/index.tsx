@@ -1,11 +1,11 @@
 import React from 'react';
-import {TextInput, TextInputProps} from 'react-native';
-import { theme } from '../../global/styles/theme';
+import { TextInput, TextInputProps } from 'react-native';
 import { styles } from './styles';
 
-export default function TextArea({...rest}:TextInputProps) {
+export default function TextArea({ ...rest }: TextInputProps) {
   return (
     <TextInput
+      {...rest}
       style={styles.container}
     />
   )

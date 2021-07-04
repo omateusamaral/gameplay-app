@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { RectButton } from 'react-native-gesture-handler';
+import uuid from 'react-native-uuid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { COLLECTION_APPOINTMENTS } from '../../configs/database';
+import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import {
   Text,
@@ -7,6 +11,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import Background from '../../Components/Background';
 import Header from '../../Components/Header';
@@ -24,50 +29,125 @@ import { GuildProps } from '../../Components/Guild';
 
 export default function AppointmentCreate() {
   const [category, setCategory] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [guild, setGUild] = useState<GuildProps>({} as GuildProps);
+  const [openGuildsModa, setOpenGuildsModal] = useState(false);
+  const [guild, setGuild] = useState<GuildProps>({} as GuildProps);
 
+  const [day, setDay] = useState('');
+  const [month, setMonth] = useState('');
+  const [hour, setHour] = useState('');
+  const [minute, setMinute] = useState('');
+  const [description, setDescription] = useState('');
 
-  function handleGuildSelect(guildSelected: GuildProps) {
-    setGUild(guildSelected);
-    setShowModal(false);
+  const navigation = useNavigation();
+
+  function handleOpenGuilds() {
+    setOpenGuildsModal(true);
   }
+
+  function handleCloseGuilds() {
+    setOpenGuildsModal(false);
+  }
+
+  function handleGuildSelect(guildSelect: GuildProps) {
+    setGuild(guildSelect);
+    setOpenGuildsModal(false);
+  }
+
   function handleCategorySelect(categoryId: string) {
     setCategory(categoryId);
   }
+
+  function handleValidate() {
+    if (!(day.length > 0)) {
+      Alert.alert('', 'Dia inválido');
+      return false;
+    }
+    if (!(month.length > 0)) {
+      Alert.alert('', 'Mês inválido');
+      return false;
+    }
+    if (!(hour.length > 0)) {
+      Alert.alert('', 'Hora inválido');
+      return false;
+    }
+    if (!(minute.length > 0)) {
+      Alert.alert('', 'Minuto inválido');
+      return false;
+    }
+    if (!(description.length > 0)) {
+      Alert.alert('', 'Descrição inválido');
+      return false;
+    }
+    if (!(category.length > 0)) {
+      Alert.alert('', 'Categoria inválido');
+      return false;
+    }
+    if (!guild.id) {
+      Alert.alert('', 'Selecione uma guilda');
+      return false;
+    }
+    return true;
+  }
+  async function handleSave() {
+    if (handleValidate()) {
+      const newAppointment = {
+        id: uuid.v4(),
+        guild,
+        category,
+        date: `${day}/${month} às ${hour}:${minute}h`,
+        description
+      };
+      const storage = await AsyncStorage.getItem(COLLECTION_APPOINTMENTS);
+      const appointments = storage ? JSON.parse(storage) : [];
+
+      await AsyncStorage.setItem(
+        COLLECTION_APPOINTMENTS,
+        JSON.stringify([...appointments, newAppointment])
+      );
+
+      navigation.navigate('Home');
+    }
+  }
+
   return (
-      <KeyboardAvoidingView style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <Background>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <Background>
         <ScrollView>
           <Header
-            title="Agendar Partida"
+            title="Agendar partida"
           />
-          <Text style={
-            [styles.label,
-            { marginLeft: 24, marginTop: 36, marginBottom: 18 }
-            ]
-          }>Categoria</Text>
-          <CategorySelect hasCheckBox
+
+          <Text style={[
+            styles.label,
+            { marginLeft: 24, marginTop: 36, marginBottom: 18 }]}
+          >
+            Categoria
+          </Text>
+
+          <CategorySelect
+            hasCheckBox
             setCategory={handleCategorySelect}
-            categorySelected={category} />
+            categorySelected={category}
+          />
+
           <View style={styles.form}>
-            <RectButton onPress={() => setShowModal(true)}>
+            <RectButton onPress={handleOpenGuilds}>
               <View style={styles.select}>
                 {
-
-                  guild.icon ?
-                    <GuildIcon /> :
-                    <View
-                      style={styles.image}
-                    />
-
+                  guild.icon
+                    ? <GuildIcon guildId={guild.id} iconId={guild.icon} />
+                    : <View style={styles.image} />
                 }
+
                 <View style={styles.selectBody}>
                   <Text style={styles.label}>
                     {
-                      guild.name ? guild.name : 'Selecione um servidor'
+                      guild.name
+                        ? guild.name
+                        : 'Selecione um servidor'
                     }
                   </Text>
                 </View>
@@ -82,31 +162,46 @@ export default function AppointmentCreate() {
 
             <View style={styles.field}>
               <View>
-              <Text style={[styles.label,{marginBottom:12}]}>
-                  Dia e Mês
+                <Text style={[styles.label, { marginBottom: 12 }]}>
+                  Dia e mês
                 </Text>
+
                 <View style={styles.column}>
-                  <SmallInput maxLength={2} />
+                  <SmallInput
+                    maxLength={2}
+                    onChangeText={setDay}
+                  />
                   <Text style={styles.divider}>
                     /
                   </Text>
-                  <SmallInput maxLength={2} />
+                  <SmallInput
+                    maxLength={2}
+                    onChangeText={setMonth}
+                  />
                 </View>
               </View>
 
               <View>
-                <Text style={[styles.label,{marginBottom:12}]}>
-                  Hora e Minuto
+                <Text style={[styles.label, { marginBottom: 12 }]}>
+                  Hora e minuto
                 </Text>
+
                 <View style={styles.column}>
-                  <SmallInput maxLength={2} />
+                  <SmallInput
+                    maxLength={2}
+                    onChangeText={setHour}
+                  />
                   <Text style={styles.divider}>
                     :
                   </Text>
-                  <SmallInput maxLength={2} />
+                  <SmallInput
+                    maxLength={2}
+                    onChangeText={setMinute}
+                  />
                 </View>
               </View>
             </View>
+
             <View style={[styles.field, { marginBottom: 12 }]}>
               <Text style={styles.label}>
                 Descrição
@@ -116,20 +211,29 @@ export default function AppointmentCreate() {
                 Max 100 caracteres
               </Text>
             </View>
-            <TextArea multiline
+
+            <TextArea
+              multiline
               maxLength={100}
               numberOfLines={5}
               autoCorrect={false}
+              onChangeText={setDescription}
             />
+
             <View style={styles.footer}>
-              <Button title="Agendar" />
+              <Button
+                title="Agendar"
+                onPress={handleSave}
+              />
             </View>
           </View>
         </ScrollView>
-        </Background>
-        <ModalView visible={showModal} closeModal={() => setShowModal(false)}>
-          <Guilds handleGuildSelect={handleGuildSelect} />
-        </ModalView>
-      </KeyboardAvoidingView>
-  )
+      </Background>
+
+      <ModalView visible={openGuildsModa} closeModal={handleCloseGuilds}>
+        <Guilds handleGuildSelect={handleGuildSelect} />
+      </ModalView>
+
+    </KeyboardAvoidingView>
+  );
 }

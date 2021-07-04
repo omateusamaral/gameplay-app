@@ -8,11 +8,11 @@ import Background from '../../Components/Background';
 import { theme } from '../../global/styles/theme';
 
 export default function SignIn() {
-  const { loading, sigIn } = useAuth();
+  const { loading, signIn } = useAuth();
 
   async function handleSignIn() {
     try {
-      await sigIn();
+      await signIn();
     } catch (error) {
       Alert.alert('', error.message);
     }

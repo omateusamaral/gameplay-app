@@ -13,7 +13,7 @@ type Props = {
   data: MembersProps;
 }
 
-export default function Meber({ data }: Props) {
+export default function Member({ data }: Props) {
   const isOnline = data.status === 'online';
   return (
     <View style={styles.container}>

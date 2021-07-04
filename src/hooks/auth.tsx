@@ -33,7 +33,9 @@ type User = {
 type AuthContextData = {
   user: User;
   loading: boolean;
-  sigIn: () => Promise<void>;
+  signIn: () => Promise<void>;
+  signOut: () => Promise<void>;
+
 }
 type AuthProviderProps = {
   children: ReactNode;
@@ -52,7 +54,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>({} as User);
   const [loading, setLoading] = useState(false);
 
-  async function sigIn() {
+  async function signIn() {
     try {
       setLoading(true);
       const authUrl = `${api.defaults.baseURL}/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
@@ -89,24 +91,29 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-    async function loadUserAsyncStorageData(){
-      const storage = await AsyncStorage.getItem(COLLECTION_USERS);
+  async function signOut() {
+    setUser({} as User);
+    await AsyncStorage.removeItem(COLLECTION_USERS);
+  }
+  async function loadUserAsyncStorageData() {
+    const storage = await AsyncStorage.getItem(COLLECTION_USERS);
 
-      if(storage){
-        const userLogged = JSON.parse(storage) as User;
-        api.defaults.headers.Authorization = `Bearer ${userLogged.token}`;
-        setUser(userLogged);
-      }
+    if (storage) {
+      const userLogged = JSON.parse(storage) as User;
+      api.defaults.headers.Authorization = `Bearer ${userLogged.token}`;
+      setUser(userLogged);
     }
-    useEffect(()=>{
-      loadUserAsyncStorageData();
-    },[]);
+  }
+  useEffect(() => {
+    loadUserAsyncStorageData();
+  }, []);
 
   return (
     <AuthContext.Provider value={{
       user,
       loading,
-      sigIn
+      signIn,
+      signOut
     }}>
       {children}
     </AuthContext.Provider>
