@@ -67,7 +67,7 @@ export default function Home() {
             <>
               <ListHeader
                 title="Partidas Agendadas"
-                subtitle="Total 6"
+                subtitle={`Total ${appointments.length}`}
               />
 
               <FlatList
